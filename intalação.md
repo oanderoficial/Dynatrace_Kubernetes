@@ -100,6 +100,16 @@ kubectl create secret generic productionk8s \
 
 <p> Substitua <strong> SEU_API_TOKEN </strong> e <strong> SEU_PAAS_TOKEN </strong> pelos valores reais gerados na interface do Dynatrace. </p>
 
+
+#### Verificar versões suportadas pelo CRD
+
+```
+kubectl get crd dynakubes.dynatrace.com -o=jsonpath='{.spec.versions[*].name}'
+```
+<br> 
+<img width="295" height="51" alt="image" src="https://github.com/user-attachments/assets/7cc04a89-9704-4391-8e0e-893d805138ee" />
+
+
 #### Configuração do Dynakube 
 
 ```yaml
@@ -197,3 +207,4 @@ OU:
 ```ps1
 .\kubectl.exe --kubeconfig=.\kubeconfig-homolog.yaml apply -f C:\Users\ANDESI3\Downloads\kubectl\dynakube.yaml
 ```
+<img width="900" height="53" alt="image" src="https://github.com/user-attachments/assets/e547f075-aef9-4de0-bb1f-11a74423952f" />
