@@ -57,7 +57,143 @@
 <img width="1084" height="325" alt="Captura de tela 2025-07-29 200722" src="https://github.com/user-attachments/assets/f714ec45-826f-4d6e-82b3-c666c65756a0" />
 <br><br>
 
-## Parte Kubernetes 
+## 3) Parte Kubernetes 
+
+<strong> Primeiro vamos fazer a instalação do Dynatrace operator na ultima versão 1.6.1 direto do repositório oficial </strong>
+<br><br> 
+
+```bash
+helm install dynatrace-operator oci://public.ecr.aws/dynatrace/dynatrace-operator \
+  --set csidriver.enabled="false" \
+  --create-namespace \
+  --namespace dynatrace \
+  --atomic
+```
+
+#### Explicação dos parâmetros
+
+- `helm install dynatrace-operator oci://...`  
+  Instala o Dynatrace Operator a partir de um repositório OCI (container registry).
+
+- `--set csidriver.enabled="false"`  
+  Desativa o driver CSI, usado para gerenciamento de volumes, caso não seja necessário.
+
+- `--create-namespace`  
+  Cria automaticamente o namespace `dynatrace` se ele ainda não existir no cluster.
+
+- `--namespace dynatrace`  
+  Define o namespace `dynatrace` como o local onde os recursos serão instalados.
+
+- `--atomic`  
+  Garante que a instalação seja atômica: se algum passo falhar, tudo será revertido automaticamente.
+
+#### Criar o secret
+
+<strong> Depois de instalado, vamos criar o secret </strong>
+
+```bash
+kubectl create secret generic productionk8s \
+  --from-literal="apiToken=SEU_API_TOKEN" \
+  --from-literal="paasToken=SEU_PAAS_TOKEN" \
+  -n dynatrace
+```
+
+<p> Substitua <strong> SEU_API_TOKEN </strong> e <strong> SEU_PAAS_TOKEN </strong> pelos valores reais gerados na interface do Dynatrace. </p>
+
+#### Configuração do Dynakube 
+
+```yaml
+apiVersion: dynatrace.com/v1beta1
+kind: DynaKube
+metadata:
+  name: productionk8s
+  namespace: dynatrace
+  annotations:
+    feature.dynatrace.com/metadata-enrichment: "true"
+    feature.dynatrace.com/automatic-kubernetes-api-monitoring: "true"
+spec:
+  apiUrl: https://SEU-AMBIENTE-DYNATRACE.NET/e/1004594-4d8d-4671d-86f4-3189005dd8da35/api
+  skipCertCheck: true
+  tokens: productionk8s
+  networkZone: productionk8s
+
+  activeGate:
+    capabilities:
+      - routing
+      - kubernetes-monitoring
+      - dynatrace-api
+    group: productionk8s
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1.5Gi
+
+```
+
+### DynaKube Manifest - Ambiente `productionk8s`
+
+Este manifesto define os componentes necessários para integrar o cluster Kubernetes ao Dynatrace usando o operador oficial.
+
+#### Estrutura do Manifesto
+
+- **apiVersion**: `dynatrace.com/v1beta1`  
+  Versão da API do CRD (Custom Resource Definition) do Dynatrace.
+
+- **kind**: `DynaKube`  
+  Tipo de recurso customizado que representa a configuração da integração Dynatrace no cluster.
+
+- **metadata.name**: `productionk8s`  
+  Nome da instância do DynaKube.
+
+- **metadata.namespace**: `dynatrace`  
+  Namespace onde os recursos Dynatrace serão instalados.
+
+#### Annotations
+
+- `feature.dynatrace.com/metadata-enrichment: "true"`  
+  Habilita enriquecimento automático de metadados das entidades monitoradas.
+
+- `feature.dynatrace.com/automatic-kubernetes-api-monitoring: "true"`  
+  Ativa a monitoração automática da API do Kubernetes.
+
+#### Spec
+
+- **apiUrl**  
+  URL do ambiente Dynatrace usado para se conectar à API.
+
+- **skipCertCheck: true**  
+  Ignora verificação de certificado SSL (útil para ambientes internos ou certificados customizados).
+
+- **tokens: productionk8s**  
+  Nome do `Secret` contendo os tokens `apiToken` e `paasToken`.
+
+- **networkZone: productionk8s**  
+  Zona de rede lógica usada para segmentação de comunicação dentro do Dynatrace.
+
+#### activeGate
+
+- **capabilities**  
+  Lista de funcionalidades ativadas:
+  - `routing`: roteamento de tráfego para o Dynatrace
+  - `kubernetes-monitoring`: monitoramento da API do Kubernetes
+  - `dynatrace-api`: acesso à API Dynatrace
+
+- **resources**  
+  Requisições e limites de CPU e memória para o ActiveGate.
 
 
+> **Importante**: certifique-se de criar o `Secret` chamado `productionk8s` no namespace `dynatrace` contendo os tokens `apiToken` e `paasToken`.
 
+#### Aplique a configuração 
+
+```bash
+kubectl apply -f dynakube.yaml
+```
+OU: 
+
+```ps1
+.\kubectl.exe --kubeconfig=.\kubeconfig-homolog.yaml apply -f C:\Users\ANDESI3\Downloads\kubectl\dynakube.yaml
+```
