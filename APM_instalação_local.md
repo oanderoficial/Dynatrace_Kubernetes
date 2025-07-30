@@ -255,4 +255,9 @@ ou:
 
 <img width="746" height="154" alt="image" src="https://github.com/user-attachments/assets/8e3f2576-235a-4067-91ce-69a86e066ae0" />
 
+#### Deep Monitoring 
+
+<strong> ⚠️ Um ponto importante não esqueça de habilitar o "Deep Monitoring" na console UI, se faz necessário para que funcione os traces distribuídos </strong>
+<br>
+<img width="608" height="366" alt="Captura de tela 2025-07-29 211540" src="https://github.com/user-attachments/assets/116f7175-e4ca-4ce5-a601-3516a6ae9b01" />
 
