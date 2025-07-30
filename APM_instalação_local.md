@@ -1,7 +1,7 @@
 # Instalação Dynatrace (APM - Kubernetes)
 ## Ambiente Managed (on premise)
 
-## 1) Valide se está liberado as porta 443 do lado dos nodes Kubernetes, e porta 9999 no ActiveGate  
+## 1) Valide se está liberado a porta 443 do lado dos nodes Kubernetes, e a porta 9999 no ActiveGate  
 
 <img width="439" height="103" alt="image" src="https://github.com/user-attachments/assets/9d589a30-69e0-4cc0-84db-d8f59ccd7340" />
 
