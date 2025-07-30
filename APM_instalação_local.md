@@ -207,7 +207,6 @@ OU:
 ```ps1
 .\kubectl.exe --kubeconfig=.\kubeconfig-homolog.yaml apply -f C:\Users\ANDESI3\Downloads\kubectl\dynakube.yaml
 ```
-<img width="900" height="53" alt="image" src="https://github.com/user-attachments/assets/e547f075-aef9-4de0-bb1f-11a74423952f" />
 
 #### Instrumentação (auto-injection)
 
