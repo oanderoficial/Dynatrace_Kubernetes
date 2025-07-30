@@ -59,7 +59,7 @@
 
 ## 3) Parte Kubernetes 
 
-<strong> Primeiro vamos fazer a instalação do Dynatrace operator na ultima versão 1.6.1 direto do repositório oficial </strong>
+<strong> Primeiro vamos fazer a instalação do Dynatrace operator na ultima versão direto do repositório oficial </strong>
 <br><br> 
 
 ```bash
